@@ -1,6 +1,7 @@
 {
   "name": "@toverux/scrolls",
   "private": true,
+  "type": "module",
   "devDependencies": {
     "@toverux/blanc-hopital": "^3.0.0",
     "@types/bun": "latest",

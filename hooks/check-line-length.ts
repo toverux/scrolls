@@ -1,14 +1,14 @@
-// Version: 1.0.0
+// Version: 2.0.0
 
-// oxlint-disable node/no-sync -- one-shot hook process, synchronous IO is intentional.
 // oxlint-disable unicorn/no-process-exit -- the hook protocol communicates via exit codes.
+// oxlint-disable node/no-top-level-await -- an entry script, run directly and never imported.
 
 // PostToolUse hook: warns the agent when a source file it just edited has lines exceeding the
 // limit from the general-code-style rule.
 // Exits with code 2 so the warning (offending line numbers) is fed back to the agent to fix.
 //
-// Executable TypeScript: erasable-syntax-only, so Node runs it directly via type stripping
-// (--experimental-strip-types on Node 22.6+, on by default since 23.6).
+// Bun is the required runtime: it runs this TypeScript file directly, and its file APIs read the
+// payload on stdin and the edited file.
 //
 // The limit's exceptions live in the general-code-style rule; suppression comments are exempted
 // mechanically, and the judgment-call exceptions are named in the warning for the agent to weigh.
@@ -18,10 +18,10 @@
 //   --extensions ts,tsx,js   comma-separated extensions to check (no dots, case-insensitive).
 //   --suppressions <regex>   ECMAScript unicode-mode regex source; matching lines are exempt.
 // An invalid --suppressions regex is not fatal: the hook warns on stderr and checks every line.
-
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
+//
+// Wire it as a PostToolUse hook matched on `Edit|Write|MultiEdit`, its command on a single line:
+//   bun "$CLAUDE_PROJECT_DIR/hooks/check-line-length.ts"
+//   --extensions md,ts,tsx --suppressions "oxlint-disable|@ts-expect-error"
 
 const maxLength = 100;
 const flagNames = new Set(['--extensions', '--suppressions']);
@@ -34,46 +34,48 @@ let graphemes: Intl.Segmenter | undefined;
 
 // The conditions worth tolerating are handled where they arise (an absent or unparseable payload,
 // an unreadable file), so nothing wraps this call: a throw from here on is a bug in the hook, and
-// Node's own exit 1 puts the stack on stderr where it can be seen. Only exit 2 blocks the tool, so
+// Bun's own exit 1 puts the stack on stderr where it can be seen. Only exit 2 blocks the tool, so
 // a loud crash still lets the edit through.
-run();
+await run();
 
-function run(): void {
-  const args = process.argv.slice(2);
+async function run(): Promise<void> {
+  const args = Bun.argv.slice(2);
   const extensionsArg = argValue(args, '--extensions');
   const suppressionsArg = argValue(args, '--suppressions');
 
   // Misconfiguration is surfaced, not silently defaulted: exit 2 feeds the fix back to the agent.
   if (extensionsArg == null || suppressionsArg == null) {
-    reportUnconfigured(extensionsArg, suppressionsArg);
+    await reportUnconfigured(extensionsArg, suppressionsArg);
+
     process.exit(2);
   }
 
   const extensions = parseExtensions(extensionsArg);
-  const suppressions = parseSuppressions(suppressionsArg);
+  const suppressions = await parseSuppressions(suppressionsArg);
 
   // An extension list that names nothing (empty, or only separators) would match no file and check
   // nothing, which reads as a clean pass on every edit. That is the one failure a hook must never
   // have, so it is reported like a missing flag rather than honored.
-  if (extensions.size == 0) {
-    reportUnconfigured(null, suppressionsArg);
+  if (extensions.length == 0) {
+    await reportUnconfigured(null, suppressionsArg);
+
     process.exit(2);
   }
 
-  const filePath = filePathOf(readPayload());
+  const filePath = filePathOf(await readPayload());
 
   if (filePath == null) {
     return;
   }
 
-  const extension = path.extname(filePath).replace('.', '').toLowerCase();
+  const lowerPath = filePath.toLowerCase();
 
-  if (!extensions.has(extension)) {
+  if (!extensions.some(extension => lowerPath.endsWith(extension))) {
     return;
   }
 
   // A single read doubles as the existence check (the file may be gone by the time the hook runs).
-  const content = tryReadFile(filePath);
+  const content = await tryReadFile(filePath);
 
   if (content == null) {
     return;
@@ -98,7 +100,8 @@ function run(): void {
   const [noun, verb, pronoun] =
     offending.length == 1 ? ['line', 'exceeds', 'it'] : ['lines', 'exceed', 'them'];
 
-  process.stderr.write(
+  await Bun.write(
+    Bun.stderr,
     `${filePath}: ${offending.length} ${noun} ${verb} the ${maxLength}-character limit. ` +
       `Offending ${noun}: ${offending.join(', ')}.\n` +
       `Wrap or shorten ${pronoun}, unless the excess is an unsplittable string or an exempt file.\n`
@@ -107,7 +110,10 @@ function run(): void {
   process.exit(2);
 }
 
-function reportUnconfigured(extensionsArg: string | null, suppressionsArg: string | null): void {
+function reportUnconfigured(
+  extensionsArg: string | null,
+  suppressionsArg: string | null
+): Promise<number> {
   const missing = [
     extensionsArg == null ? '--extensions' : null,
     suppressionsArg == null ? '--suppressions' : null
@@ -116,26 +122,29 @@ function reportUnconfigured(extensionsArg: string | null, suppressionsArg: strin
   const noun = missing.length == 1 ? 'flag' : 'flags';
   const pronoun = missing.length == 1 ? 'it' : 'them';
 
-  process.stderr.write(
+  return Bun.write(
+    Bun.stderr,
     `check-line-length: missing required ${noun} ${missing.join(' and ')}. ` +
       `Add ${pronoun} to the hook command in .claude/settings.json, for example:\n` +
-      `  --extensions ts,tsx,js,jsx,mjs,cjs ` +
-      `--suppressions 'oxlint-disable|eslint-disable|biome-ignore|@ts-expect-error|@ts-ignore'\n`
+      `--extensions md,ts,tsx ` +
+      `--suppressions 'oxlint-disable|@ts-expect-error'\n`
   );
 }
 
-function parseExtensions(source: string): Set<string> {
-  return new Set(
-    source
-      .split(',')
-      .map(extension => extension.trim().replace(/^\.+/u, '').toLowerCase())
-      .filter(extension => extension !== '')
-  );
+// Extensions become the dotted suffixes a path is matched against, so `ts` never matches `.mts`.
+// A leading dot is stripped before that dot is added back: `.ts` in the config is a natural way to
+// write the flag, and left alone it would yield `..ts` and match nothing.
+function parseExtensions(source: string): readonly string[] {
+  return source
+    .split(',')
+    .map(extension => extension.trim().replace(/^\./u, '').toLowerCase())
+    .filter(extension => extension != '')
+    .map(extension => `.${extension}`);
 }
 
 // An empty pattern means "exempt nothing": compiling it would produce a regex that matches every
 // line, silently exempting the whole file and disabling the check.
-function parseSuppressions(source: string): RegExp | null {
+async function parseSuppressions(source: string): Promise<RegExp | null> {
   if (source.trim() == '') {
     return null;
   }
@@ -143,7 +152,10 @@ function parseSuppressions(source: string): RegExp | null {
   try {
     return new RegExp(source, 'u');
   } catch {
-    process.stderr.write('check-line-length: invalid --suppressions regex; checking every line.\n');
+    await Bun.write(
+      Bun.stderr,
+      'check-line-length: invalid --suppressions regex; checking every line.\n'
+    );
 
     return null;
   }
@@ -163,17 +175,17 @@ function argValue(args: readonly string[], flag: string): string | null {
 // The hook payload is JSON on stdin. A harness that invokes the hook with no stdin, or with
 // something that is not JSON, gets no check rather than a crash: the hook has nothing to say about
 // a file it cannot identify.
-function readPayload(): unknown {
+async function readPayload(): Promise<unknown> {
   try {
-    return JSON.parse(readFileSync(0, 'utf8'));
+    return await Bun.stdin.json();
   } catch {
     return null;
   }
 }
 
-function tryReadFile(filePath: string): string | null {
+async function tryReadFile(filePath: string): Promise<string | null> {
   try {
-    return readFileSync(filePath, 'utf8');
+    return await Bun.file(filePath).text();
   } catch {
     return null;
   }
