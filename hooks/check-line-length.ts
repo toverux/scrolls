@@ -1,4 +1,4 @@
-// Version: 2.0.0
+// Version: 3.0.0
 
 // oxlint-disable unicorn/no-process-exit -- the hook protocol communicates via exit codes.
 // oxlint-disable node/no-top-level-await -- an entry script, run directly and never imported.
@@ -10,14 +10,19 @@
 // Bun is the required runtime: it runs this TypeScript file directly, and its file APIs read the
 // payload on stdin and the edited file.
 //
-// The limit's exceptions live in the general-code-style rule; suppression comments are exempted
-// mechanically, and the judgment-call exceptions are named in the warning for the agent to weigh.
+// The limit's exceptions live in the general-code-style rule; the ones a regex can recognize --
+// URLs, and whatever --suppressions names -- are exempted mechanically, and the judgment-call
+// exceptions are named in the warning for the agent to weigh.
 //
-// Two required flags configure the check; the hook has no baked-in defaults, so an unconfigured
-// invocation exits with an agent-readable error naming the missing flags and an example fix:
+// One required flag and one optional one configure the check:
 //   --extensions md,ts,tsx   Comma-separated extensions to check (no dots, case-insensitive).
 //   --suppressions <regex>   ECMAScript unicode-mode regex source; matching lines are exempt.
-// An invalid --suppressions regex is not fatal: the hook warns on stderr and checks every line.
+//                            Optional, and added to the built-in exemptions rather than replacing
+//                            them, so no configuration can turn a built-in one off.
+// Naming no extensions, or a --suppressions pattern that does not compile, is a hard failure: the
+// hook checks nothing and exits with an agent-readable error and an example fix, on every edit
+// until the command is corrected. A misconfigured checker that looks like a passing one is the
+// one failure worth blocking on.
 //
 // Wire it as a PostToolUse hook matched on `Edit|Write|MultiEdit`, its command on a single line:
 //   bun "$CLAUDE_PROJECT_DIR/hooks/check-line-length.ts"
@@ -25,6 +30,12 @@
 
 const maxLength = 100;
 const flagNames = new Set(['--extensions', '--suppressions']);
+
+// Always in effect, whatever --suppressions says. A URL has no split that leaves it usable, so a
+// line carrying one is over the limit for a reason no rewrite fixes. The pattern is an RFC 3986
+// scheme followed by an authority, which covers https, file, and git+ssh alike; schemes with no
+// authority (`mailto:`, `data:`) are left to --suppressions, being rarer and easier to false-match.
+const builtinSuppressions = /[a-z][a-z0-9+.-]*:\/\//u;
 
 // Built on first use and kept for the rest of the process: constructing a segmenter initializes
 // ICU segmentation data, and a file whose every line fits -- the common case for a hook that runs
@@ -43,24 +54,43 @@ async function run(): Promise<void> {
   const extensionsArg = argValue(args, '--extensions');
   const suppressionsArg = argValue(args, '--suppressions');
 
-  // Misconfiguration is surfaced, not silently defaulted: exit 2 feeds the fix back to the agent.
-  if (extensionsArg == null || suppressionsArg == null) {
-    await reportUnconfigured(extensionsArg, suppressionsArg);
-
-    process.exit(2);
-  }
-
-  const extensions = parseExtensions(extensionsArg);
-  const suppressions = await parseSuppressions(suppressionsArg);
-
-  // An extension list that names nothing (empty, or only separators) would match no file and check
+  // An extension list that is missing, empty, or only separators would match no file and check
   // nothing, which reads as a clean pass on every edit. That is the one failure a hook must never
-  // have, so it is reported like a missing flag rather than honored.
+  // have, so it is surfaced rather than honored: exit 2 feeds the fix back to the agent.
+  const extensions = extensionsArg == null ? [] : parseExtensions(extensionsArg);
+
   if (extensions.length == 0) {
-    await reportUnconfigured(null, suppressionsArg);
+    await Bun.write(
+      Bun.stderr,
+      `check-line-length: --extensions names no extension to check. ` +
+        `Set it in the hook command in .claude/settings.json, for example:\n` +
+        `--extensions md,ts,tsx --suppressions 'oxlint-disable|@ts-expect-error'\n`
+    );
 
     process.exit(2);
   }
+
+  // A pattern that does not compile is a typo in the hook command, not a laxer check: carrying on
+  // without it would report the very lines it was written to exempt, so it fails like a missing
+  // extension list.
+  // A blank pattern is the one absent-like value that is not a typo, and means "add nothing":
+  // compiling `''` would produce a regex matching every line, exempting whole files and disabling
+  // the check. Only the blankness test trims, since space is meaningful inside a regex.
+  const configuredSource = suppressionsArg?.trim() ? suppressionsArg : null;
+  const configured = configuredSource == null ? null : compileSuppression(configuredSource);
+
+  if (configuredSource != null && configured == null) {
+    await Bun.write(
+      Bun.stderr,
+      `check-line-length: --suppressions is not a valid regex, so nothing was checked. ` +
+        `Fix the pattern in the hook command in .claude/settings.json. It was: ${configuredSource}\n`
+    );
+
+    process.exit(2);
+  }
+
+  const suppressions =
+    configured == null ? [builtinSuppressions] : [builtinSuppressions, configured];
 
   const filePath = filePathOf(await readPayload());
 
@@ -81,14 +111,14 @@ async function run(): Promise<void> {
     return;
   }
 
-  // 1-based line numbers exceeding the limit, skipping suppression directives
+  // 1-based line numbers exceeding the limit, skipping exempt lines
   // Lines split on LF with any trailing CR dropped, so CRLF checkouts measure like LF ones.
   const offending: number[] = [];
 
   for (const [index, line] of content.split(/\r?\n/u).entries()) {
     const over = line.length > maxLength && graphemeLength(line) > maxLength;
 
-    if (over && (suppressions == null || !suppressions.test(line))) {
+    if (over && !suppressions.some(pattern => pattern.test(line))) {
       offending.push(index + 1);
     }
   }
@@ -109,27 +139,6 @@ async function run(): Promise<void> {
   process.exit(2);
 }
 
-function reportUnconfigured(
-  extensionsArg: string | null,
-  suppressionsArg: string | null
-): Promise<number> {
-  const missing = [
-    extensionsArg == null ? '--extensions' : null,
-    suppressionsArg == null ? '--suppressions' : null
-  ].filter((flag): flag is string => flag != null);
-
-  const noun = missing.length == 1 ? 'flag' : 'flags';
-  const pronoun = missing.length == 1 ? 'it' : 'them';
-
-  return Bun.write(
-    Bun.stderr,
-    `check-line-length: missing required ${noun} ${missing.join(' and ')}. ` +
-      `Add ${pronoun} to the hook command in .claude/settings.json, for example:\n` +
-      `--extensions md,ts,tsx ` +
-      `--suppressions 'oxlint-disable|@ts-expect-error'\n`
-  );
-}
-
 // Extensions become the dotted suffixes a path is matched against, so `ts` never matches `.mts`.
 // A leading dot is stripped before that dot is added back: `.ts` in the config is a natural way to
 // write the flag, and left alone it would yield `..ts` and match nothing.
@@ -141,29 +150,20 @@ function parseExtensions(source: string): readonly string[] {
     .map(extension => `.${extension}`);
 }
 
-// An empty pattern means "exempt nothing": compiling it would produce a regex that matches every
-// line, silently exempting the whole file and disabling the check.
-async function parseSuppressions(source: string): Promise<RegExp | null> {
-  if (source.trim() == '') {
-    return null;
-  }
-
+// The configured pattern stays its own regex beside the built-ins rather than being spliced into
+// their source, so it cannot reshape a built-in by pairing an alternation or a group across a seam.
+function compileSuppression(source: string): RegExp | null {
   try {
     return new RegExp(source, 'u');
   } catch {
-    await Bun.write(
-      Bun.stderr,
-      'check-line-length: invalid --suppressions regex; checking every line.\n'
-    );
-
     return null;
   }
 }
 
 // A flag's value is the next argument, unless that argument is one of this hook's own flags:
-// swallowing one would leave the real flag unset while looking configured, and the check would
-// pass on every file. Only those two names are excluded, since a suppressions pattern may
-// legitimately start with `--` (it is the line-comment marker in SQL, Lua, and Haskell).
+// swallowing one would leave the real flag unset while looking configured, silently checking the
+// wrong extensions or dropping a suppression. Only those two names are excluded, since a
+// suppressions pattern may legitimately start with `--` (the line-comment marker in SQL and Lua).
 function argValue(args: readonly string[], flag: string): string | null {
   const index = args.indexOf(flag);
   const value = index == -1 ? null : (args[index + 1] ?? null);
