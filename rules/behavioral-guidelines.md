@@ -3,7 +3,7 @@ name: behavioral-guidelines
 version: 1.0.0
 ---
 
-# General Guidelines
+# Behavioral Guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes.
 
