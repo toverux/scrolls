@@ -5,6 +5,7 @@
   "devDependencies": {
     "@toverux/blanc-hopital": "^3.0.0",
     "@types/bun": "latest",
+    "lefthook": "^2.1.10",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
     "oxlint-tsgolint": "^7.0.2001"
