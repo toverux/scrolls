@@ -8,6 +8,10 @@
           {
             "type": "command",
             "command": "mise exec bun -- bun \"$CLAUDE_PROJECT_DIR/hooks/check-line-length.ts\" --extensions md,ts,tsx,js,jsx,mjs,cjs --suppressions \"oxlint-disable|@ts-expect-error\""
+          },
+          {
+            "type": "command",
+            "command": "mise exec bun -- bun \"$CLAUDE_PROJECT_DIR/hooks/check-em-dashes.ts\" --allow-extensions md"
           }
         ]
       }

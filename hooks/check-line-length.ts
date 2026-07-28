@@ -15,7 +15,7 @@
 //
 // Two required flags configure the check; the hook has no baked-in defaults, so an unconfigured
 // invocation exits with an agent-readable error naming the missing flags and an example fix:
-//   --extensions ts,tsx,js   comma-separated extensions to check (no dots, case-insensitive).
+//   --extensions md,ts,tsx   Comma-separated extensions to check (no dots, case-insensitive).
 //   --suppressions <regex>   ECMAScript unicode-mode regex source; matching lines are exempt.
 // An invalid --suppressions regex is not fatal: the hook warns on stderr and checks every line.
 //
