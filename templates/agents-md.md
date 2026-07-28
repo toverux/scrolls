@@ -77,4 +77,4 @@ Ask first before:
 - Prefer LSP over Grep/Glob/Read for code navigation.
 - Make the smallest safe change, but if you think a refactor is overdue, speak up.
 - When uncertain, state the assumption and proceed conservatively.
-- Actively propose updates to `AGENTS.md` or other appropriate documentation files when you detect drift.
+- Actively propose updates to `AGENTS.md`, comments, or other docs when you detect drift.
