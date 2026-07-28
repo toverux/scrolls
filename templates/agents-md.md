@@ -36,10 +36,10 @@ Ex:
 - `mise build`: Check the project compiles fine.
 - `mise check:agents`: Run type checking, formatting and linting, with output optimized for agents.
 
-You can run `mise tasks` to see the full list of shortcut commands; append arguments freely, mise passes them through (ex. `mise some:task --some-arg`).
+Run `mise tasks` to see the full shortcut list; append arguments freely, mise passes them through (ex. `mise some:task --some-arg`).
 Do NOT use npx to run commands; prefer mise shortcuts, or bun/bunx when no shortcut exists.
 
-Always run the appropriate check/test commands after performing changes; but do it at the end of the editing session, not in the middle.
+Always run the appropriate check/test commands after changes, at the end of the editing session rather than mid-flight.
 
 ## Glossary
 
@@ -59,8 +59,8 @@ Ex:
 
 Never:
 
-- Create a git branch, stage files, or commit work yourself unless the user expressly told you so.
-- Commit secrets, tokens, `.env` files, dumps or credentials.
+- Create a git branch, stage files, or commit work yourself unless the user expressly said so.
+- Commit secrets, tokens, `.env` files, dumps, credentials.
 - Modify generated files unless the generation command was run.
 - Change public API behavior without calling it out.
 
@@ -68,7 +68,7 @@ Ask first before:
 
 - Adding a dependency.
 - Changing database schema or authentication/authorization logic.
-- Reworking architecture, or adding background jobs, queues, or external services.
+- Reworking architecture, or adding background jobs, queues, external services.
 - Performing destructive file or data operations.
 
 ## Preferred agent behavior

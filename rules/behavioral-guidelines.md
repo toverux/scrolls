@@ -15,10 +15,10 @@ Behavioral guidelines to reduce common LLM coding mistakes.
 
 Before implementing:
 
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them – don't pick silently.
+- State assumptions explicitly. If unsure, ask.
+- If multiple readings exist, show all of them; never pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- If something is unclear, stop. Name the confusing part. Ask.
 
 ## 2. Simplicity First
 
@@ -26,17 +26,17 @@ Before implementing:
 
 - No features beyond what was asked.
 - No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines, and it could be 50, rewrite it.
+- No "flexibility" or "configurability" nobody asked for.
+- No error handling for impossible cases.
+- If you write 200 lines and it could be 50, rewrite it.
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+Ask yourself: "Would a senior engineer call this overcomplicated?" If yes, simplify.
 
 ## 3. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
-Transform tasks into verifiable goals:
+Turn tasks into verifiable goals:
 
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
@@ -50,4 +50,4 @@ For multistep tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+Strong criteria let you loop independently. Weak criteria ("make it work") need constant clarification.
