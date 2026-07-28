@@ -97,14 +97,13 @@ async function run(): Promise<void> {
     return;
   }
 
-  const [noun, verb, pronoun] =
-    offending.length == 1 ? ['line', 'exceeds', 'it'] : ['lines', 'exceed', 'them'];
+  const [noun, verb] = offending.length == 1 ? ['line', 'exceeds'] : ['lines', 'exceed'];
 
   await Bun.write(
     Bun.stderr,
     `${filePath}: ${offending.length} ${noun} ${verb} the ${maxLength}-character limit. ` +
       `Offending ${noun}: ${offending.join(', ')}.\n` +
-      `Wrap or shorten ${pronoun}, unless the excess is an unsplittable string or an exempt file.\n`
+      `Wrap or shorten, unless excess is unsplittable string or .md file intended for agents.\n`
   );
 
   process.exit(2);
