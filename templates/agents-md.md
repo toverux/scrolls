@@ -1,5 +1,5 @@
 <!--
-Version: 1.0.0
+Version: 1.0.1
 Starter AGENTS.md template. Copy it into your project, replace the placeholder prose and "Ex:"
 blocks, and delete any section (or line) your project doesn't need: every line an agent loads costs
 context, so keep only what changes its behavior.
@@ -75,6 +75,6 @@ Ask first before:
 
 - Start by inspecting existing patterns.
 - Prefer LSP over Grep/Glob/Read for code navigation.
-- Make the smallest safe change, but if you think a refactor is overdue, speak up.
+- Make the smallest safe change, but speak up when a refactor is overdue.
 - When uncertain, state the assumption and proceed conservatively.
 - Actively propose updates to `AGENTS.md`, comments, or other docs when you detect drift.
