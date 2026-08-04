@@ -1,5 +1,5 @@
 <!--
-Version: 1.0.0
+Version: 1.1.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -14,6 +14,11 @@ Copy only what is needed.
 ## Subagents
 
 - Never pass `run_in_background: false`, including where the agent's result is the next thing needed. Block on the notification rather than on the call.
+
+## Editing files
+
+- Apply text edits with your native editing tools rather than shell script, heredoc or other workaround.
+- Reach for a script only where the edit is genuinely bulk and mechanical — one substitution across many files — and read a changed file back afterward.
 
 ## Windows environment
 
