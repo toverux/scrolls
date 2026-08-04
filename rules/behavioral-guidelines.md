@@ -1,6 +1,6 @@
 ---
 name: behavioral-guidelines
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Behavioral Guidelines
@@ -31,6 +31,12 @@ Before implementing:
 - If you write 200 lines and it could be 50, rewrite it.
 
 Ask yourself: "Would a senior engineer call this overcomplicated?" If yes, simplify.
+
+Prose obeys this too — docs, comments, commit messages, anything written for a reader:
+
+- Write the shortest version that carries the point, and match the length of what surrounds it.
+- A correction edits what was wrong. Whatever you add around it is new material: it needs its own reason, and it earns its own review.
+- Say a thing once, at the depth the reader acts on.
 
 ## 3. Goal-Driven Execution
 
