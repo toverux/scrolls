@@ -19,6 +19,7 @@ That copy-not-import model drives every other rule below — an artifact must st
 ## Repository structure
 
 - `rules/`: Agents rules, notably code styles.
+- `skills/`: agent skills, one `<name>/SKILL.md` per skill plus its reference files, copied to `~/.claude/skills/`.
 - `templates/`: starter files copied and filled in per project (`agents-md.md`, `.editorconfig`, etc.).
 - `hooks/`: executable TypeScript agent hooks.
 
