@@ -10,15 +10,18 @@ Copy only what is needed.
 
 - Consider your auto memory to be readonly, only the user can tell you when you can write it.
 - You can still remove or edit stale memories implicitly.
+- Auto memory _is_ a /compound candidate.
 
 ## Subagents
 
-- Never pass `run_in_background: false`, including where the agent's result is the next thing needed. Block on the notification rather than on the call.
+- Never pass run_in_background: false, including where the agent's result is the next thing needed. Block on the notification rather than on the call.
+- Pass model: "opus" on Agent dispatches for review work — finders, verifiers and sweep agents.
+- All other subagents stay on the default model unless the user says otherwise.
 
 ## Editing files
 
 - Apply text edits with your native editing tools rather than shell script, heredoc or other workaround.
-- Reach for a script only where the edit is genuinely bulk and mechanical — one substitution across many files — and read a changed file back afterward.
+- Reach for a script only where the edit is genuinely bulk and mechanical — one substitution across many files — and read a changed file back afterwards.
 
 ## Windows environment
 
@@ -27,6 +30,8 @@ Copy only what is needed.
 - Git Bash `ln -s` copies the target instead of linking it unless the command carries `MSYS=winsymlinks:nativestrict`; confirm with `ls -la` that the entry shows `-> target`, since a silent copy looks right until git records a regular file.
 - Python's text-mode write rewrites every line ending to CRLF: `io.open(p, 'w', encoding='utf-8')` turns an LF file into a CRLF one while applying the intended edit correctly, so a bulk edit lands as a whole-file diff on a tracked file. Open in binary, or pass `newline=''`.
 - In PowerShell, `gh api --jq` fails when the expression carries backslash-escaped quotes (`select(.type==\"blob\")`) — jq receives the literal backslashes and errors on `unexpected token "\"`. Write the expression quote-free (`.tree[].path`) or run the command through the Bash tool.
+- `pwsh -Command "…"` needs `&` before a quoted program path, since a quoted first token parses as an expression, and a trailing `; exit $LASTEXITCODE` to preserve the exit code — the wrapper reports every non-zero exit as 1, silently breaking any protocol keyed on a specific code.
+- `bash` on the Windows PATH is the WSL stub, not Git Bash: Git for Windows puts only its `cmd` directory there, with `bash.exe` in the sibling `bin`. Name it by full path; WSL bash sees a Linux filesystem and cannot reach Windows paths at all.
 
 ## Git commits
 
