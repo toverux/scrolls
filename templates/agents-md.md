@@ -59,7 +59,7 @@ Ex:
 
 Never:
 
-- Create a git branch, stage files, or commit work yourself unless the user expressly said so.
+- Create a git branch or commit work yourself unless the user expressly said so.
 - Commit secrets, tokens, `.env` files, dumps, credentials.
 - Modify generated files unless the generation command was run.
 - Change public API behavior without calling it out.
