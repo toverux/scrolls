@@ -3,7 +3,7 @@ name: update-deps
 description: Sweep a bun project's outdated dependencies in verified batches, reading each release's notes before upgrading and adopting the APIs they introduce.
 argument-hint: '[package…]'
 disable-model-invocation: true
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Update Dependencies
@@ -90,6 +90,7 @@ Each round:
    These belong to the batch, since the upgrade is not done without them.
 3. **Run the ladder.**
 4. **On red, fix within bounds.**
+   Rule findings from a linter or formatter are the user's call, one rule at a time: read [rule-decisions.md](rule-decisions.md) and run it in place of the attempt below.
    Apply the migration the notes prescribe.
    Allow one genuine attempt, plus one follow-up when the second failure is clearly the same cause.
    Still red: bisect the batch first when it holds several packages, so the blame lands on the real culprit rather than its neighbors, then `git reset --hard` back to the last checkpoint, write a ledger entry, and move to the next batch.
