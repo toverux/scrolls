@@ -1,27 +1,45 @@
 <!--
-Version: 1.1.0
+Version: 1.2.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
 
 # Global instructions
 
+## Who am I
+
+I am Morgan (@toverux), a developer with a passion for open source and modding.
+Here are some projects of mine, so when you encounter one of those referenced from another, you know you can act on it and they are /compound candidates for improvements.
+
+- toverux/cantrips: my agentic development loop, you can propose updates to IDEAS.md when issues are encountered with its skills.
+- toverux/scrolls: my templates for global or project-scoped agent files, code styles, reusable hooks. Might want to update when a local fork is updated.
+- toverux/blanc-hopital-config: my configs for TypeScript and oxc linter/formatter. They can be updated from outside when performing dependencies upgrade.
+- toverux/HallOfFame: my main Cities Skylines 2 mod, can be used as a reference for good practices when working on another mod's setup. 
+- CitiesSkylinesModding/agents-plugins: you can propose updates to ROADMAP.md from a mod repo when you have issues/gaps with the skills and MCP servers it provides (gameface, unity-devtools, cs2-modding).
+
 ## Memory
 
 - Consider your auto memory to be readonly, only the user can tell you when you can write it.
 - You can still remove or edit stale memories implicitly.
 - Auto memory _is_ a /compound candidate.
+- Do not store narration in memory, only long-term facts about personal repo preferences I cannot store elsewhere.
+- Use /writing-for-agents when editing memory.
 
 ## Subagents
 
 - Never pass run_in_background: false, including where the agent's result is the next thing needed. Block on the notification rather than on the call.
 - Pass model: "opus" on Agent dispatches for review work — finders, verifiers and sweep agents.
 - All other subagents stay on the default model unless the user says otherwise.
+- Write no scaffolding files to brief them. Put the briefing in the prompt, however many agents repeat it.
 
 ## Editing files
 
 - Apply text edits with your native editing tools rather than shell script, heredoc or other workaround.
-- Reach for a script only where the edit is genuinely bulk and mechanical — one substitution across many files — and read a changed file back afterwards.
+- You can however ignore the previous instruction when the edit is bulk and mechanical.
+
+## Linux/Unix environment
+
+- Commands run under zsh: quote globs in arguments, and hold path lists in arrays.
 
 ## Windows environment
 
