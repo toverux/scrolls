@@ -1,5 +1,5 @@
 <!--
-Version: 1.2.0
+Version: 1.3.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -14,7 +14,7 @@ Here are some projects of mine, so when you encounter one of those referenced fr
 - toverux/cantrips: my agentic development loop, you can propose updates to IDEAS.md when issues are encountered with its skills.
 - toverux/scrolls: my templates for global or project-scoped agent files, code styles, reusable hooks. Might want to update when a local fork is updated.
 - toverux/blanc-hopital-config: my configs for TypeScript and oxc linter/formatter. They can be updated from outside when performing dependencies upgrade.
-- toverux/HallOfFame: my main Cities Skylines 2 mod, can be used as a reference for good practices when working on another mod's setup. 
+- toverux/HallOfFame: my main Cities Skylines 2 mod, can be used as a reference for good practices when working on another mod's setup.
 - CitiesSkylinesModding/agents-plugins: you can propose updates to ROADMAP.md from a mod repo when you have issues/gaps with the skills and MCP servers it provides (gameface, unity-devtools, cs2-modding).
 
 ## Memory
@@ -24,6 +24,10 @@ Here are some projects of mine, so when you encounter one of those referenced fr
 - Auto memory _is_ a /compound candidate.
 - Do not store narration in memory, only long-term facts about personal repo preferences I cannot store elsewhere.
 - Use /writing-for-agents when editing memory.
+
+## Recommendations
+
+- Recommend the option with the best outcome; state cost and scope as facts beside it.
 
 ## Subagents
 
