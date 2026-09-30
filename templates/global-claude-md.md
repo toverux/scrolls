@@ -1,5 +1,5 @@
 <!--
-Version: 1.3.0
+Version: 1.4.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -11,11 +11,13 @@ Copy only what is needed.
 I am Morgan (@toverux), a developer with a passion for open source and modding.
 Here are some projects of mine, so when you encounter one of those referenced from another, you know you can act on it and they are /compound candidates for improvements.
 
-- toverux/cantrips: my agentic development loop, you can propose updates to IDEAS.md when issues are encountered with its skills.
+- toverux/cantrips: my agentic development loop, you can propose updates to IDEAS.md when issues are encountered with its skills. Include the session transcript ID in the report.
 - toverux/scrolls: my templates for global or project-scoped agent files, code styles, reusable hooks. Might want to update when a local fork is updated.
 - toverux/blanc-hopital-config: my configs for TypeScript and oxc linter/formatter. They can be updated from outside when performing dependencies upgrade.
 - toverux/HallOfFame: my main Cities Skylines 2 mod, can be used as a reference for good practices when working on another mod's setup.
 - CitiesSkylinesModding/agents-plugins: you can propose updates to ROADMAP.md from a mod repo when you have issues/gaps with the skills and MCP servers it provides (gameface, unity-devtools, cs2-modding).
+
+Also, when an issue is found in an upstream project, signal it loudly and ask me if I want to report the issue upstream.
 
 ## Memory
 
@@ -44,6 +46,7 @@ Here are some projects of mine, so when you encounter one of those referenced fr
 ## Linux/Unix environment
 
 - Commands run under zsh: quote globs in arguments, and hold path lists in arrays.
+- Bun CLIs end by setting `process.exitCode`, never `process.exit()` after a stdout write: a piped output is cut at 64 KiB with exit 0.
 
 ## Windows environment
 
