@@ -1,5 +1,5 @@
 <!--
-Version: 1.4.0
+Version: 1.5.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -42,6 +42,11 @@ Also, when an issue is found in an upstream project, signal it loudly and ask me
 
 - Apply text edits with your native editing tools rather than shell script, heredoc or other workaround.
 - You can however ignore the previous instruction when the edit is bulk and mechanical.
+
+## Writing for humans
+
+- Run prose meant for human readers through the `humanizer:humanizer` skill before it leaves the session: a PR title and body, an issue or a comment, docs, a letter.
+- Files an agent loads follow /writing-for-agents instead.
 
 ## Linux/Unix environment
 
