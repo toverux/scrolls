@@ -1,5 +1,5 @@
 <!--
-Version: 1.5.0
+Version: 2.0.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -37,15 +37,11 @@ Also, when an issue is found in an upstream project, signal it loudly and ask me
 - Pass model: "opus" on Agent dispatches for review work — finders, verifiers and sweep agents.
 - All other subagents stay on the default model unless the user says otherwise.
 - Write no scaffolding files to brief them. Put the briefing in the prompt, however many agents repeat it.
-
-## Editing files
-
-- Apply text edits with your native editing tools rather than shell script, heredoc or other workaround.
-- You can however ignore the previous instruction when the edit is bulk and mechanical.
+- Retry a subagent lost to a transient API error (529, overload) until it returns: wait 5 minutes more before each retry, 30 at most.
 
 ## Writing for humans
 
-- Run prose meant for human readers through the `humanizer:humanizer` skill before it leaves the session: a PR title and body, an issue or a comment, docs, a letter.
+- Run prose meant for human readers through the `humanizer:humanizer` skill before it leaves the session: a PR title and body, an issue or a comment, i18n strings, and other permanent high value docs (ex. a README, but not a ROADMAP).
 - Files an agent loads follow /writing-for-agents instead.
 
 ## Linux/Unix environment
