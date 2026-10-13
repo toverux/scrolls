@@ -1,5 +1,5 @@
 <!--
-Version: 2.1.0
+Version: 2.2.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -10,7 +10,7 @@ Copy only what is needed.
 
 I am Morgan (@toverux), a developer with a passion for open source and modding.
 Here are some projects of mine, so when you encounter one of those referenced from another, you know you can act on it and they are /compound candidates for improvements.
-Each is checked out at `~/Documents/Dev/<repo>`: edit the files there, never through a pull request.
+Each is checked out at `~/Documents/Dev/<repo>`: edit the files there, never through a pull request, and commit those edits when you commit the repo you work in.
 
 - toverux/cantrips: my agentic development loop, you can propose updates to `IDEAS.md` when issues are encountered with its skills. Include the session transcript ID in the report.
 - toverux/scrolls: my templates for global or project-scoped agent files, code styles, reusable hooks. Might want to update when a local fork is updated.
@@ -19,6 +19,7 @@ Each is checked out at `~/Documents/Dev/<repo>`: edit the files there, never thr
 - CitiesSkylinesModding/agents-plugins: you can propose updates to `docs/ROADMAP.md` from a mod repo when you have issues/gaps with the skills and MCP servers it provides (gameface, unity-devtools, cs2-modding).
 
 Also, when an issue is found in an upstream project, signal it loudly and ask me if I want to report the issue upstream.
+A handoff for another repo, or for a report to write later, goes in `~/Documents/Handoffs/`.
 
 ## Memory
 
