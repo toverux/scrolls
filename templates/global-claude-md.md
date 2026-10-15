@@ -1,5 +1,5 @@
 <!--
-Version: 2.3.0
+Version: 3.0.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -40,9 +40,6 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 ## Subagents
 
 - Never pass run_in_background: false, including where the agent's result is the next thing needed. Block on the notification rather than on the call.
-- Pass model: "opus" on Agent dispatches for review work — finders, verifiers and sweep agents.
-- All other subagents stay on the default model unless the user says otherwise.
-- Write no scaffolding files to brief them. Put the briefing in the prompt, however many agents repeat it.
 - Retry a subagent lost to a transient API error (529, overload) until it returns: wait 5 minutes more before each retry, 30 at most.
 
 ## Writing for humans
