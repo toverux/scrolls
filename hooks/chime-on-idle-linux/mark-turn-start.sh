@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Version: 1.0.0
+# Version: 1.1.0
 
 # UserPromptSubmit hook: stamp when the user last typed, so the Stop hook can
 # tell a long wait from a quick reply. Fires once per prompt, not once per
@@ -15,6 +15,6 @@ mkdir -p "$dir"
 date +%s > "$dir/$id.start"
 
 # Sessions never announce that they are gone, so stamps are pruned by age.
-find "$dir" -name '*.start' -mmin +10080 -delete 2>/dev/null
+find "$dir" \( -name '*.start' -o -name '*.push' \) -mmin +10080 -delete 2>/dev/null
 
 exit 0
