@@ -1,5 +1,5 @@
 <!--
-Version: 2.2.0
+Version: 2.3.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -32,6 +32,10 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 ## Recommendations
 
 - Recommend the option with the best outcome; state cost and scope as facts beside it.
+
+## Notifications
+
+- Call `PushNotification` each time you end a turn waiting on me: a question, a choice, an approval, a blocked step. Lead the message with what I must decide.
 
 ## Subagents
 
