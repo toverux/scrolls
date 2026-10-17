@@ -1,31 +1,27 @@
 #!/usr/bin/env bash
-# Version: 1.0.0
+# Version: 2.0.0
 
-# PostToolUse hook on PushNotification: show the agent's message as a desktop
-# banner. Claude Code's own desktop notification only reaches a few terminals
-# (Ghostty, Kitty, iTerm2), so this one goes through notify-send.
+# PostToolUse hook on PushNotification: chime and show the agent's message as
+# a desktop banner. Claude Code's own desktop notification only reaches a few
+# terminals (Ghostty, Kitty, iTerm2), so this one goes through notify-send.
 #
-# The banner follows the tool's verdict: localSent is false when the terminal
-# has focus, so the banner appears only while you are away from it.
+# Both follow the tool's verdict: localSent is false when the terminal has
+# focus, so they fire only while you are away from it.
 #
 # The banner carries no desktop-entry hint. GNOME Shell destroys a
 # notification tied to an app as soon as its sender leaves D-Bus, and
 # notify-send exits right after sending, so the banner would never show.
 #
-# Each push stamps the session, so chime-on-idle.sh leaves its own banner out
-# of a turn that already pushed one.
-#
-# Requires jq and notify-send (libnotify).
+# Requires jq, pw-play (PipeWire), notify-send (libnotify), and a chime.wav
+# beside this script, such as a copy of
+# C:\Windows\Media\Windows Proximity Connection.wav.
 
 input=$(cat)
 sent=$(jq -r '.tool_response.localSent // false' <<<"$input" 2>/dev/null)
 [ "$sent" = true ] || exit 0
 
-id=$(jq -r '.session_id // empty' <<<"$input" 2>/dev/null)
-if [ -n "$id" ]; then
-  mkdir -p "$(dirname "$0")/state"
-  touch "$(dirname "$0")/state/$id.push"
-fi
+# Detached so the hook exits promptly while the sound plays out.
+setsid -f pw-play "$(dirname "$0")/chime.wav" >/dev/null 2>&1 </dev/null
 
 # GNOME renders body markup, so <, > and & are escaped. Transient keeps the
 # banner out of the notification list once it times out.
