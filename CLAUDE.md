@@ -37,6 +37,7 @@ Run the check command after editing, at the end of the session rather than mid-f
 
 - **Bump the version on every semantic edit.** Artifacts carry their version in frontmatter (`rules/`) or a header comment (`hooks/`, `templates/`); consumers diff against it to decide whether to re-copy. Semver: breaking rewording or removed guidance is major, new guidance is minor, typo or clarification is patch. Skip the bump for edits that cannot change a consumer's behavior.
 - **Write every artifact to survive the copy.** No relative links to other files in this repo, no assumption that a sibling scroll came along. What an artifact needs, it states.
+- PowerShell hooks read stdin through `[IO.StreamReader]::new([Console]::OpenStandardInput(), [Text.Encoding]::UTF8)`: `[Console]::In` decodes Claude Code's UTF-8 payload with the console's OEM code page.
 - Rule and template prose is read by an agent every turn it applies. Cut lines that don't change behavior; loading is the cost, wording is the product.
 
 ## Preferred agent behavior
