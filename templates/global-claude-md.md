@@ -51,6 +51,7 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 
 - Commands run under zsh: quote globs in arguments, and hold path lists in arrays.
 - Bun CLIs end by setting `process.exitCode`, never `process.exit()` after a stdout write: a piped output is cut at 64 KiB with exit 0.
+- Stop a process by its PID (from the port it binds, or `pgrep -x`): a `pkill -f` pattern also matches the tool call's own shell, whose command line contains it, and kills the call.
 
 ## Windows environment
 
