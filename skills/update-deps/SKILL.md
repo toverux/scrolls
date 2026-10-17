@@ -32,7 +32,7 @@ On any other branch, stay on it.
 ## Phase 1 — The ladder, then batch zero
 
 Build the verification ladder first, since every batch from here on is proven with it.
-Discover how this repo can be proven **green**, using whatever means are at your disposal: its own scripts and tasks first (`package.json` scripts, mise tasks, CI workflow steps), then anything you can construct — typecheck, lint, tests, build, a boot check that starts the dev or start script and waits for ready-or-crash before killing it, a curl against a route it serves, an existing Playwright setup.
+Discover how this repo can be proven **green**, using whatever means are at your disposal: its own scripts and tasks first (`package.json` scripts, mise tasks, CI workflow steps), then anything you can construct — typecheck, lint, tests, build, a boot check that starts the dev or start script and waits for ready-or-crash before killing it, failing outright when its port is already bound, since a leftover server would answer for it, a curl against a route it serves, an existing Playwright setup.
 Note the risk this ladder structurally cannot reach: anything user-visible only, such as rendering, styling, or animation.
 
 Then batch zero.
