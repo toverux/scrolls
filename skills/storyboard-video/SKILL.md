@@ -3,22 +3,23 @@ name: storyboard-video
 description: Make a video from screen recordings on GNOME Wayland, a before/after comparison or a demo, from scripted takes, HTML cards and ffmpeg.
 argument-hint: '[what the video shows, free text]'
 disable-model-invocation: true
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Storyboard video
 
 A video is a **storyboard** of segments, each a **take** (a screen recording of one scripted run) or a **card** (a still rendered from HTML), composed into one file by ffmpeg.
-Everything lives in one work folder (`.scratch/video/` in a repo, or one the user names): the cards' HTML and PNGs, `graph.txt`, and a `render.sh` that rebuilds cards and video in one command, so every later change is an edit and a rerun.
+Everything lives in one work folder (`.scratch/video/` in a repo, or one the user names): the cards' HTML and PNGs, the segments' graphs, and a `render.sh` that rebuilds cards and video in one command, so every later change is an edit and a rerun.
 The takes go there too, so the work folder sits under `$HOME`: the recorder's sandbox hides `/tmp`.
 
-The scripts beside this file do the mechanical parts; each prints its usage when run without arguments:
+The scripts beside this file do the mechanical parts; each shell script prints its usage when run without arguments:
 
 - `rec.sh start <out.mkv> [fps] | stop | check <file>`: records the whole screen.
 - `changes.sh <video> <w:h:x:y> [min]`: lists the times a region changes.
 - `frames.sh <video> <start> <duration> <w:h:x:y> <out.png>`: stacks a span's distinct frames, each stamped with its time.
 - `card.sh <in.html> <out.png> [WxH]`: renders a card.
 - `sheet.sh <video> <out.png> <seconds>...`: a contact sheet of a render.
+- `pointer.py`: moves the real pointer through a virtual one on `/dev/uinput`, reading `move X Y [seconds]`, `click` and `sleep` lines on stdin (its header has the rest).
 
 ## 1. Storyboard
 
@@ -42,6 +43,8 @@ The first run opens GNOME's share dialog: ask the user to pick the screen and cl
 ## 3. Takes
 
 Drive the app from a script (its UI automation, a devtools protocol, a CLI), so the input and its pace are the same in every take: text typed one character at a time at a steady human pace, fixed waits between steps.
+Show the cursor (`REC_CURSOR=yes`) and drive it with `pointer.py`, so clicks and hovers land and show as a user's.
+The user keeps off the mouse and keyboard during takes, and whatever the app does with stray input (edge scrolling, keyboard shortcuts) is frozen first.
 Each take: `rec.sh start`, a 2 s lead-in, the scripted run, the result plus a 2 s tail, `rec.sh stop`, `rec.sh check`.
 Schedule takes after any measurement has finished, as the encoder shares the machine.
 Retake one where anything outside the script shows in its frame: a notification, an overlay still fading, a panel in another state.
@@ -57,6 +60,7 @@ Retake one where anything outside the script shows in its frame: a notification,
 
 ## 5. Cards
 
+Load the `frontend-design` skill, and give the cards the visual language of the product the video shows: its font, colours and panel shapes.
 One HTML file per card, sharing one CSS file, sized in CSS pixels to the video and rendered by `card.sh`.
 A scene that holds takes gets a background card with its labels and an empty frame where each take goes; timers are drawn over it by ffmpeg.
 On-screen text is prose for human viewers: run each string through the `humanizer:humanizer` skill, where installed, whenever one is added or changed.
@@ -66,7 +70,7 @@ The HTML files are the single source of every string; when the user asks for the
 
 ## 6. Compose
 
-Write `graph.txt` and `render.sh` from [`ffmpeg-recipes.md`](ffmpeg-recipes.md) (beside this file): aligning takes on their event, crop and overlay, running timers, chained segments, the encode.
+Write one graph per segment and `render.sh` from [`ffmpeg-recipes.md`](ffmpeg-recipes.md) (beside this file): aligning takes on their event, crop and overlay, running timers, faster waits, segments rendered apart then chained, the encode.
 
 **Done when** `render.sh` runs clean.
 

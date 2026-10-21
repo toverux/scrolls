@@ -1,6 +1,6 @@
 # ffmpeg recipes
 
-Building blocks for the compose step, assembled into one filter graph kept in a file and passed with `-/filter_complex graph.txt` (ffmpeg 7.1 and later; older builds take `-filter_complex_script graph.txt`).
+Building blocks for the compose step, assembled into one filter graph per segment, each kept in a file and passed with `-/filter_complex graph.txt` (ffmpeg 7.1 and later; older builds take `-filter_complex_script graph.txt`).
 
 ## Inputs
 
@@ -31,15 +31,22 @@ A crop at 1:1 stays sharp; scaling a small region up blurs text, so frame the sh
 A timer counting from `T0` and freezing after `D` seconds, two drawtexts: white while running, a colour once done.
 
 ```
-drawtext=fontfile=F:fontsize=130:x=X:y=Y:fontcolor=white:enable='between(t,T0,T0+D)':text='%{eif\:floor(min(max(t-T0,0),D))\:d}.%{eif\:mod(floor(min(max(t-T0,0),D)*100),100)\:d\:2} s',
+drawtext=fontfile=F:fontsize=130:x=X:y=Y:y_align=font:fontcolor=white:enable='between(t,T0,T0+D)':text='%{eif\:floor(min(max(t-T0,0),D))\:d}.%{eif\:mod(floor(min(max(t-T0,0),D)*100),100)\:d\:2} s',
 drawtext=…same…:fontcolor=0x6fdc8c:enable='gte(t,T0+D)'
 ```
 
 - Inside the single quotes, commas and semicolons are safe, but each `:` that separates a `%{…}` function's own arguments needs `\:`. A bare colon there fails with "No option name near …".
-- Use a font with tabular digits, or the text jitters as it counts. Check it: `magick -font F -pointsize 120 label:"0.00 s" -format %w info:` gives the same width for `1.11 s` and `7.63 s`.
+- Use a font with tabular digits, or the text jitters as it counts. Check it: `magick -font F -pointsize 120 label:"0.00 s" -format %w info:` gives the same width for `1.11 s` and `7.63 s`. drawtext applies no `tnum` feature, so for a font without such digits, save a copy with fontTools whose digit glyphs share the widest digit's advance, each centred in it.
+- `y_align=font` holds the line still: the default aligns each frame to its tallest glyph, and round digits overshoot flat ones by a few pixels. It sets the text about 0.35 × the font size lower than the default.
 - `D` comes from the frames (event frame minus start frame), never from a log: the viewer sees the frames.
 
+## Faster waits
+
+Where a take waits between actions, play the waits faster and the actions at their pace: split the take, then `trim=start=B:end=E,setpts=(PTS-STARTPTS)/K` each span with its speed `K`, and `concat=n=N:v=1` the spans. A timer over a span played at `K` counts `(t-T0)*K` and freezes at `T0+D/K`: drawtext's `t` is output time once `setpts` has run.
+
 ## Chain segments
+
+Render each segment to its own file (`-crf 10`), then chain the files. One graph over every take decodes them all from the start and queues the later takes' frames until their segment plays: with 4K takes that ran out of memory.
 
 `xfade` joins two streams of the same size, frame rate and pixel format (end each segment with `format=yuv420p,fps=60`). Each offset is the running total of the earlier segments' lengths minus the earlier transitions:
 
