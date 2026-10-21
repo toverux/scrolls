@@ -1,5 +1,5 @@
 <!--
-Version: 3.1.0
+Version: 3.2.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -46,6 +46,7 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 ## Writing for humans
 
 - Run prose meant for human readers through the `humanizer:humanizer` skill before it leaves the session: a PR title and body, an issue or a comment, i18n strings, and other permanent high value docs (ex. a README, but not a ROADMAP).
+- Write it direct: state facts, never sell.
 - Files an agent loads follow /writing-for-agents instead.
 
 ## Linux/Unix environment
