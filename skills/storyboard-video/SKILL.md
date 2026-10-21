@@ -3,7 +3,7 @@ name: storyboard-video
 description: Make a video from screen recordings on GNOME Wayland, a before/after comparison or a demo, from scripted takes, HTML cards and ffmpeg.
 argument-hint: '[what the video shows, free text]'
 disable-model-invocation: true
-version: 1.1.0
+version: 1.1.1
 ---
 
 # Storyboard video

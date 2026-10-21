@@ -58,8 +58,10 @@ Render each segment to its own file (`-crf 10`), then chain the files. One graph
 ## Encode
 
 ```
-ffmpeg -v error -y <inputs> -/filter_complex graph.txt -map '[out]' -c:v libx264 -preset slow -crf 18 -movflags +faststart out.mp4
+ffmpeg -v error -y <inputs> -/filter_complex graph.txt -map '[out]' -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart out.mp4
 ```
+
+`-pix_fmt yuv420p` keeps the file playable on phones: a filter such as `xfade` can hand the encoder 4:4:4 frames, which libx264 then encodes as High 4:4:4 Predictive, a profile phone hardware decoders reject (a black frame in Discord's mobile app) while desktop browsers decode it in software.
 
 1080p60 with mostly static cards comes to a few MB for half a minute.
 
