@@ -1,5 +1,5 @@
 <!--
-Version: 3.0.0
+Version: 3.1.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -36,6 +36,7 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 ## Notifications
 
 - Call `PushNotification` each time you end a turn waiting on me: a question, a choice, an approval, a blocked step. Lead the message with what I must decide.
+- Assign a human-in-the-loop task only in long-lived work that goes on while it waits; a question that ends your turn goes in the reply and its `PushNotification` alone.
 
 ## Subagents
 
