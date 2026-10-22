@@ -1,5 +1,5 @@
 <!--
-Version: 1.0.1
+Version: 1.1.0
 Starter AGENTS.md template. Copy it into your project, replace the placeholder prose and "Ex:"
 blocks, and delete any section (or line) your project doesn't need: every line an agent loads costs
 context, so keep only what changes its behavior.
@@ -17,6 +17,16 @@ Only the tools an agent will actually invoke or write for.
 Ex:
 
 - [mise-en-place](https://mise.jdx.dev): manages dev tools, env vars, and tasks for this repo.
+
+## Project settings
+
+The language and compiler settings that change how code gets written, one list per language naming the projects it covers.
+Ex:
+
+C#, same in `App` and `App.Tests`:
+
+- `Nullable` and `TreatWarningsAsErrors` enabled: fix a warning or suppress it inline with a justification.
+- `ImplicitUsings` off: write every `using` explicitly.
 
 ## Repository structure
 
