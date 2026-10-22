@@ -1,9 +1,12 @@
-# Version: 1.2.0
+# Version: 1.2.1
 # C# style. Compatible with various formatters, but made in particular for `jb cleanupcode`
 # (ReSharper CLI, same engine as Rider), run with the profile in `csharp.sln.DotSettings` for
 # enabling more smart diagnostics and auto-fixes for mechanical changes.
-# Minor auto-applied rules are :warning (they should gate the build via `EnforceCodeStyleInBuild`
-# and `TreatWarningsAsErrors`); shape-changing rules stay :suggestion (hints only).
+# Minor auto-applied rules are :warning; shape-changing rules stay :suggestion (hints only).
+# The :warning rules gate the build only when the project sets `TreatWarningsAsErrors` and
+# `<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>`, plus, on a target that is not
+# .NETCoreApp (ex. net48), `<AnalysisLevel>latest</AnalysisLevel>`: the SDK sets AnalysisLevel
+# only for .NETCoreApp, and without it the build ignores the :warning severity of most IDE rules.
 # Usage: $ dotnet jb cleanupcode csharp.slnx --profile="AutoCleanup" --settings="csharp.sln.DotSettings"
 
 [*.cs]
