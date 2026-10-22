@@ -18,7 +18,7 @@ Each is checked out at `~/Documents/Dev/<repo>`: edit the files there, never thr
 - toverux/HallOfFame: my main Cities Skylines 2 mod, can be used as a reference for good practices when working on another mod's setup.
 - CitiesSkylinesModding/agents-plugins: you can propose updates to `docs/ROADMAP.md` from a mod repo when you have issues/gaps with the skills and MCP servers it provides (gameface, unity-devtools, cs2-modding).
 
-Also, when an issue is found in an upstream project, signal it loudly and ask me if I want to report the issue upstream.
+Also, when an issue is found in an upstream project, signal it loudly and ask me once if I want to report the issue upstream; an unanswered ask is dropped.
 A handoff for another repo, or for a report to write later, goes in `~/Documents/Handoffs/`.
 
 ## Memory
