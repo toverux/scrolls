@@ -493,8 +493,7 @@ dotnet_naming_rule.type_members_rule.symbols = type_members
 dotnet_naming_rule.type_members_rule.style = pascal_case
 dotnet_naming_rule.type_members_rule.severity = suggestion
 
-# Generated build output is not our code: exempt obj/ from analysis. (The vendored
-# Mono.Debugger.Soft tree is instead handled by not enforcing style on the sdb project.)
+# Generated build output is not our code: exempt obj/ from analysis.
 [**/obj/**]
 generated_code = true
 dotnet_analyzer_diagnostic.severity = none
