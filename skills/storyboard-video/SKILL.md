@@ -19,6 +19,7 @@ The scripts beside this file do the mechanical parts; each shell script prints i
 - `frames.sh <video> <start> <duration> <w:h:x:y> <out.png>`: stacks a span's distinct frames, each stamped with its time.
 - `card.sh <in.html> <out.png> [WxH]`: renders a card.
 - `sheet.sh <video> <out.png> <seconds>...`: a contact sheet of a render.
+- `pane.sh <session> <text> | --keys <key>...`: types into a tmux pane at a human pace and waits for the app to go idle.
 - `pointer.py`: moves the real pointer through a virtual one on `/dev/uinput`, reading `move X Y [seconds]`, `click` and `sleep` lines on stdin (its header has the rest).
 
 ## 1. Storyboard
@@ -44,6 +45,7 @@ The first run opens GNOME's share dialog: ask the user to pick the screen and cl
 
 Drive the app from a script (its UI automation, a devtools protocol, a CLI), so the input and its pace are the same in every take: text typed one character at a time at a steady human pace, fixed waits between steps.
 Show the cursor (`REC_CURSOR=yes`) and drive it with `pointer.py`, so clicks and hovers land and show as a user's.
+A terminal app, Claude Code in a checkout among them, is driven through a tmux pane and recorded as a window share: [`terminal-takes.md`](terminal-takes.md).
 The user keeps off the mouse and keyboard during takes, and whatever the app does with stray input (edge scrolling, keyboard shortcuts) is frozen first.
 Each take: `rec.sh start`, a 2 s lead-in, the scripted run, the result plus a 2 s tail, `rec.sh stop`, `rec.sh check`.
 Schedule takes after any measurement has finished, as the encoder shares the machine.
