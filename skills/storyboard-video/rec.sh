@@ -59,7 +59,9 @@ stop)
   ;;
 check)
   [ $# -ge 2 ] || { echo "usage: rec.sh check <file>" >&2; exit 2; }
-  echo "decode errors: $(ffmpeg -v error -i "$2" -f null - 2>&1 | wc -l)"
+  # The recorder's first frames repeat a timestamp, which ffmpeg reports as an error; every
+  # take starts with a lead-in longer than that, so the check decodes from one second in.
+  echo "decode errors: $(ffmpeg -v error -ss 1 -i "$2" -f null - 2>&1 | wc -l)"
   ffprobe -v error -show_entries format=duration -show_entries stream=width,height,r_frame_rate \
     -of compact=p=0 "$2"
   ;;
