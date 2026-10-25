@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # rec.sh start <out.mkv> [fps] | stop | check <file>
 # Records the whole screen with gpu-screen-recorder (Flatpak com.dec05eba.gpu_screen_recorder)
-# through the desktop portal, reusing the session the user approved once. REC_CURSOR=yes shows
+# through the desktop portal, reusing the session the user approved once; REC_PORTAL_RESTORE=no
+# opens the share dialog again, to pick a window instead of the screen. REC_CURSOR=yes shows
 # the pointer. stop signals the recorder itself and waits until it has closed the file: the
 # Flatpak wrapper does not forward SIGINT, and a recorder left running keeps writing.
 set -u
@@ -26,7 +27,7 @@ start)
   fi
 
   flatpak run --command=gpu-screen-recorder com.dec05eba.gpu_screen_recorder -w portal \
-    -restore-portal-session yes -cursor "${REC_CURSOR:-no}" -f "${3:-60}" -c mkv -q very_high \
+    -restore-portal-session "${REC_PORTAL_RESTORE:-yes}" -cursor "${REC_CURSOR:-no}" -f "${3:-60}" -c mkv -q very_high \
     -o "$out" >"$log" 2>&1 &
 
   # The first run waits on the portal's share dialog until the user approves it.
