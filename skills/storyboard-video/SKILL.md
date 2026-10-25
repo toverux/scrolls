@@ -56,7 +56,7 @@ Retake one where anything outside the script shows in its frame: a notification,
 ## 4. Locate
 
 - **Crop.** Grab a frame (`ffmpeg -ss 1 -i take.mkv -frames:v 1 frame.png`), zoom on the window's corner (`magick frame.png -crop 120x120+X+Y +repage -scale 500% zoom.png`) to read where its content starts, then add the app's own element coordinates, times the display scale on a scaled screen. The capture holds every window on screen, so each take shows only its crop.
-- **Events.** `changes.sh` over the region where the event shows (the input box, the result area) gives candidate times; `frames.sh` over the span confirms the exact frame: the last keystroke, the first frame of the result.
+- **Events.** `changes.sh` over the region where the event shows (the input box, the result area) gives candidate times, and only there: a keystroke barely moves a whole frame's mean, so a whole-frame scan lists the redraws alone; `frames.sh` over the span confirms the exact frame: the last keystroke, the first frame of the result.
 
 **Done when** each take has its crop and its event times, each read off a frame.
 

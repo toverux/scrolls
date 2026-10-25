@@ -65,6 +65,8 @@ ffmpeg -v error -y <inputs> -/filter_complex graph.txt -map '[out]' -c:v libx264
 
 1080p60 with mostly static cards comes to a few MB for half a minute.
 
+A video for a GitHub README is an upload through one of GitHub's editors, under 10 MB, which then renders as a player where its asset URL stands on its own line: a 1280-wide copy at `-crf 23` holds two minutes of terminal footage in that.
+
 ## Shell
 
 zsh reads `$4:t` as `$4` with the `:t` modifier, which happens when a filter string is built from positional parameters in an inline zsh function. Brace them: `${4}:text=…`. A bash script (`#!/usr/bin/env bash`) is free of it.
