@@ -79,7 +79,7 @@ Write one graph per segment and `render.sh` from [`ffmpeg-recipes.md`](ffmpeg-re
 ## 7. Review
 
 Run `sheet.sh` at the key times (each segment, just before the event, just after the first variant finishes, the end) and look at it: each timer stops on its event's frame, labels sit in their frames, and nothing outside a crop shows.
-Send the video to the user with what each number on screen is and where it comes from: read off the takes, or quoted on a card from elsewhere.
+Send the video to the user through `SendUserFile` with what each number on screen is and where it comes from: read off the takes, or quoted on a card from elsewhere.
 After each change the user asks for, rerun `render.sh`, review the changed segment, and send it again.
 
 **Done when** the user accepts the video.

@@ -6,6 +6,7 @@ Building blocks for the compose step, assembled into one filter graph per segmen
 
 - A take: `-i take.mkv`.
 - A still card held for `D` seconds: `-loop 1 -t D -framerate 60 -i card.png`, at the takes' frame rate so segments chain.
+  Laid over a take, it keeps the overlay running to its own end, freezing the take's last frame: give that `overlay` `shortest=1`.
 
 ## Align a take on its event
 
@@ -25,6 +26,8 @@ Crop to the region and overlay it on a background card drawn with empty frames w
 ```
 
 A crop at 1:1 stays sharp; scaling a small region up blurs text, so frame the shot large in the app instead (enlarge the panel, zoom the UI) before recording.
+
+On 4:2:0 frames `crop` rounds an odd X or Y down, onto the window's border: crop after `format=yuv444p`, then `fillborders=left=1:right=1:mode=smear` over the content column each side the border's colour bleeds into.
 
 ## Running timer
 
