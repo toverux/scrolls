@@ -53,12 +53,15 @@ It reads and greps the repo, and writes nothing to it.
    | Surface           | Read from                                                                             |
    | ----------------- | ------------------------------------------------------------------------------------- |
    | mise tools        | `mise outdated --bump --json`, keeping entries whose `source.path` is inside the repo |
+   | mise itself       | `min_version` in `mise.toml` against `mise --version` and `jdx/mise`'s latest release |
    | CI actions        | `uses:` pins against each action's latest release                                     |
    | Images            | `FROM` lines, versions their `RUN` lines install, compose `image:` keys               |
    | Declared versions | `packageManager`, `engines`, `.nvmrc`, `.tool-versions`                               |
 
    A tool pinned on several surfaces is one triage unit, and its pins diverging is reported like a divergence between members.
    `engines` is a floor: it moves only when an adoption needs a newer one.
+   `min_version = { soft = "<version>" }` records the mise the repo last passed on, and warns on an older one; the plain string form is a hard minimum that stops an older mise, so write the soft one.
+   mise gets a batch whenever `min_version` is absent or differs from the version mise lands on; its span runs from `min_version`, or from the installed version when absent, and an empty span takes no research.
 
 2. **Read the ledger.**
    `docs/agents/dependency-updates.md` records past skips.
@@ -75,7 +78,7 @@ It reads and greps the repo, and writes nothing to it.
    Their verdicts are what you plan from — keep the verdicts, not the changelogs.
 
 5. **Form the batches.**
-   - First the toolchain, one tool per batch, the runtime before the rest, so every later batch runs on it.
+   - First the toolchain, one tool per batch: mise, which installs the others, then the runtime, then the rest, so every later batch runs on them.
    - Then everything that moves within its existing semver range, as one batch (`bun update`).
    - Then out-of-range minors and patches whose notes are clean, grouped.
    - Then one major per batch, alone.
@@ -99,6 +102,8 @@ Each round:
 
 1. **Apply** the batch's versions and run `bun install`.
    A mise tool moves with `mise up --bump <tool>` then `mise install`, always naming the tool; every other surface moves by editing its pin.
+   mise itself moves with `mise self-update --no-plugins`, run only when the installed mise is behind, which the plan flags as changing the machine, and `min_version` takes what `mise --version` then reports, since self-update skips releases younger than its minimum age.
+   When a package manager owns the mise install and self-update refuses, pause with the command to run.
    Every pin of a tool moves in its batch.
    `bun upgrade` mutates the machine's global toolchain, so this skill never runs it.
 2. **Adopt what the upgrade requires**: what it breaks, plus deprecations that now warn.
