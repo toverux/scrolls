@@ -1,5 +1,5 @@
 <!--
-Version: 3.2.0
+Version: 3.3.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -21,13 +21,13 @@ Each is checked out at `~/Documents/Dev/<repo>`: edit the files there, never thr
 Also, when an issue is found in an upstream project, signal it loudly and ask me once if I want to report the issue upstream; an unanswered ask is dropped.
 A handoff for another repo, or for a report to write later, goes in `~/Documents/Handoffs/`.
 
-## Memory
+## Project-local instructions
 
-- Consider your auto memory to be readonly, only the user can tell you when you can write it.
-- You can still remove or edit stale memories implicitly.
-- Auto memory _is_ a /compound candidate.
-- Do not store narration in memory, only long-term facts about personal repo preferences I cannot store elsewhere.
-- Use /writing-for-agents when editing memory.
+- A repo's durable facts and preferences that its own files cannot carry go in its `CLAUDE.local.md`, kept out of git, never in auto memory.
+- Write to it only when I say so; you can still edit or remove a stale line on your own.
+- `CLAUDE.local.md` _is_ a /compound candidate.
+- Store only long-term facts, never narration.
+- Use /writing-for-agents when editing it.
 
 ## Recommendations
 
