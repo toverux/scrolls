@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text]'
 disable-model-invocation: true
-version: 0.2.0
+version: 0.3.0
 ---
 
 # Open a PR
@@ -51,6 +51,7 @@ Rules for the body, whatever the shape:
 - The title becomes the merge commit: it follows the repo's title convention and states what the change gets the user, not its mechanism:
   - Bad: `perf(server): negotiate permessage-deflate on the websocket`
   - Good: `perf(server): cut websocket frame size by 70%+ with gzipping`
+  - A number in the title holds across the whole table, not its best cell: `up to 90%` taken from one row of seven overstates the change.
 - The body opens on the problem as the user meets it, in plain words, then the change. The list of touched functions belongs to the diff:
   - Bad: "Removed implicit workspace carry-over from every "new thread" entry point (cmd+n / cmd+shift+o, sidebar v1/v2 buttons, command palette). New threads inherit only the project from context; branch, worktree, and env mode always come from the configured defaults. Deleted buildContextualThreadOptions, startNewThreadInProjectFromContext, and the v1 sidebar's seed-context machinery."
   - Good: "My "new worktree" default was ignored when starting new threads on existing worktrees. Not intuitive. Now your preferences always apply."
