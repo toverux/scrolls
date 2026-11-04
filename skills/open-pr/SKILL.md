@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text]'
 disable-model-invocation: true
-version: 0.3.0
+version: 0.4.0
 ---
 
 # Open a PR
@@ -71,6 +71,8 @@ Run `humanizer:humanizer` on the file in file mode, one pass over the whole text
 **Done when** the pass ran.
 
 ## 5. Critique
+
+First put the draft's framing to the user in one line, the story the body tells, and wait: a reframe after the critique spends its rounds on a dead draft.
 
 The reviewer takes the brief of [`critique.md`](critique.md). Where this session ran `/review-gate` on the branch and its `cantrips:arbiter` agent is still in context, spawned here and addressable by its id, send the brief to that agent: it already holds the diff's reading. Otherwise spawn a fresh agent, in the background, with the brief as its whole prompt and nothing of this session; an arbiter reachable only through a transcript or a checkpoint counts as absent. Wait for the report.
 
