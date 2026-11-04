@@ -13,7 +13,7 @@ Fits a branch that makes one improvement, in one commit or in several that only 
 
 <Known trade-offs, one paragraph, where there are any; several known limits, a short list under "Known limits".>
 
-<Design calls the maintainer should settle, where there are any: a numbered list under "Trade-offs and questions", each the call and its cost, then a question offering the alternative we can build.>
+<Design calls the maintainer should settle, only where the branch leaves one open that the maintainer would decide differently; most fixes have none: a numbered list under "Trade-offs and questions", each the call and its cost, then a question offering the alternative we can build.>
 ```
 
 ## Rules

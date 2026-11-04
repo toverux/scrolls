@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text]'
 disable-model-invocation: true
-version: 0.5.0
+version: 0.6.0
 ---
 
 # Open a PR
@@ -57,7 +57,10 @@ Rules for the body, whatever the shape:
   - Good: "My "new worktree" default was ignored when starting new threads on existing worktrees. Not intuitive. Now your preferences always apply."
 - Every claim comes from a commit message, a record or the diff. A number carries its conditions (the hardware, the data size, what was timed) as the record states them.
 - Before a claim rests on a test result, check the records written after it: a later finding can show the test didn't do what a player does. The critique reads only the body and the commits, so it can't catch this.
+- A bug's failure reads as the code's behavior before the change ("Currently, …") wherever the reader could take it for the new behavior.
 - The body states the failure, its cause and the change. The evidence of the testing stays in the records; a maintainer asks for it when they want it.
+- A fix for something that once worked says what changed under it, and since when, as far as the sources tell; where they can't date it, the body says so.
+- The change states what is new to its reader. On someone else's repo, a mechanism the maintainer wrote (their dialog, their setting, their system) is named, never explained.
 - A detail of the session's test case (the fixture, the dataset, the input that happened to show the bug) stands only where the fix depends on it; elsewhere, state the rule it is an instance of.
 - A name the maintainer may not know (another project, a tool, an acronym) is spelled out or left out.
 - Plain words, short paragraphs, one idea each. The template sets the headings.
@@ -100,6 +103,7 @@ After each of their turns, before acting on it, re-read the file from disk and f
 
 - Scan the title, the body, its quotes and attachments for secrets and private details: a token, a home path, an internal host, a name the user kept out.
 - Where the user has no fork of the target yet, create one with `gh repo fork <target> --clone=false` (`--remote` is refused beside a repo argument) and add it as a remote.
+- Where the PR holds one commit, or the repo squash-merges, the commit title matches the PR's final title, user edits included: reword the unpushed commit before the push.
 - `git push -u <remote> <branch>`; a local branch pushed under another name goes as `git push <remote> HEAD:refs/heads/<name>`, without `-u`, which would point the local branch's upstream at the fork.
 - `gh pr create --repo <target> --base <base> --head <owner>:<branch> --title "$(head -1 <file>)" --body-file <(tail -n +3 <file>)`, ready for review rather than a draft, so the review bots run. Where it fails on a spent GraphQL rate limit, open it through REST: `gh api repos/<owner>/<repo>/pulls -f title=... -f head=<owner>:<branch> -f base=<base> -F body=@<body file>`.
 - The body carries the whole case; a comment goes on the PR only when the user asks for one.
