@@ -3,7 +3,7 @@ name: storyboard-video
 description: Make a video from screen recordings on GNOME Wayland, a before/after comparison or a demo, from scripted takes, HTML cards and ffmpeg.
 argument-hint: '[what the video shows, free text]'
 disable-model-invocation: true
-version: 1.1.1
+version: 1.2.0
 ---
 
 # Storyboard video
@@ -39,12 +39,17 @@ The pipeline needs the Flatpak `com.dec05eba.gpu_screen_recorder` (its portal ca
 Record a test of a few seconds with `rec.sh start`, `rec.sh stop`, then `rec.sh check`.
 The first run opens GNOME's share dialog: ask the user to pick the screen and click Share. Later runs reuse that session with no dialog.
 
-**Done when** the test decodes with 0 errors at the screen's resolution.
+When the takes need desktop control (step 3), the `computer-use-linux` MCP server is connected and `echo $COMPUTER_USE_LINUX_INDICATOR` prints `0`, as its on-screen indicator records into every take.
+Otherwise ask the user to enable it (`/plugin` or `/mcp`), or to restart Claude Code with `COMPUTER_USE_LINUX_INDICATOR=0`.
+
+**Done when** the test decodes with 0 errors at the screen's resolution, and desktop control, where the takes need it, runs with its indicator off.
 
 ## 3. Takes
 
 Drive the app from a script (its UI automation, a devtools protocol, a CLI), so the input and its pace are the same in every take: text typed one character at a time at a steady human pace, fixed waits between steps.
 Show the cursor (`REC_CURSOR=yes`) and drive it with `pointer.py`, so clicks and hovers land and show as a user's.
+Where no script reaches the app or a step needs eyes, take control of the desktop through the `computer-use-linux` MCP server.
+Its calls run at the pace of your turns, not a clock: inside a take, keep them to steps whose timing a cut or a faster wait hides; between takes, use them freely to reset the starting state.
 A terminal app, Claude Code in a checkout among them, is driven through a tmux pane and recorded as a window share: [`terminal-takes.md`](terminal-takes.md).
 The user keeps off the mouse and keyboard during takes, and whatever the app does with stray input (edge scrolling, keyboard shortcuts) is frozen first.
 Each take: `rec.sh start`, a 2 s lead-in, the scripted run, the result plus a 2 s tail, `rec.sh stop`, `rec.sh check`.
