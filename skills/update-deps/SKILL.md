@@ -3,7 +3,7 @@ name: update-deps
 description: Sweep a bun project's outdated dependencies and toolchain in verified batches, reading each release's notes before upgrading and adopting what they introduce.
 argument-hint: '[package…]'
 disable-model-invocation: true
-version: 1.3.0
+version: 1.4.0
 ---
 
 # Update Dependencies
@@ -130,7 +130,17 @@ Each round:
 
 ## Phase 4 — Ledger and report
 
-Write every skip to `docs/agents/dependency-updates.md`, one entry per package:
+Open a new `docs/agents/dependency-updates.md` with this header, and bring an existing one's header to it:
+
+```markdown
+# Dependency updates
+
+Packages a dependency sweep deliberately left behind, and what would let them move.
+An entry stays until its blocking condition is gone; the next sweep re-evaluates it and says so.
+A declined adoption stays out until its reason no longer holds, and a docs pass entry records the last release whose notes were read, so the next sweep reads on from it.
+```
+
+Write every skip to it, one entry per package:
 
 ```markdown
 ## <package>
