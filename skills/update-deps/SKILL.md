@@ -3,7 +3,7 @@ name: update-deps
 description: Sweep a bun project's outdated dependencies and toolchain in verified batches, reading each release's notes before upgrading and adopting what they introduce.
 argument-hint: '[package…]'
 disable-model-invocation: true
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Update Dependencies
@@ -61,7 +61,10 @@ It reads and greps the repo, and writes nothing to it.
    A tool pinned on several surfaces is one triage unit, and its pins diverging is reported like a divergence between members.
    `engines` is a floor: it moves only when an adoption needs a newer one.
    `min_version = { soft = "<version>" }` records the mise the repo last passed on, and warns on an older one; the plain string form is a hard minimum that stops an older mise, so write the soft one.
+   An adoption using a mise feature adds `hard = "<the release that introduced it>"` beside `soft`, since an older mise refuses the whole `mise.toml` on a key it does not know.
    mise gets a batch whenever `min_version` is absent or differs from the version mise lands on; its span runs from `min_version`, or from the installed version when absent, and an empty span takes no research.
+   The runtime is the exception: it gets a research agent every sweep, current or not, for adoptions only, its span running from the ledger's docs pass, or from the `engines` floor when the ledger has none, to the version it lands on.
+   A formatter, linter or type checker the repo runs through the runtime (`bun fmt`, `bun lint`, `bun check`) moves with the runtime's batch, which then carries its rule findings; the npm package left behind for its config file and the editor stays a unit of its own, whose risk is the editor running another version than the check.
 
 2. **Read the ledger.**
    `docs/agents/dependency-updates.md` records past skips.
@@ -100,7 +103,7 @@ It reads and greps the repo, and writes nothing to it.
 Run the approved batches in order.
 Each round:
 
-1. **Apply** the batch's versions and run `bun install`.
+1. **Apply** the batch's versions and run `bun install`, then `bun dedupe`, so the duplicate versions the move left fold into its commit.
    A mise tool moves with `mise up --bump <tool>` then `mise install`, always naming the tool; every other surface moves by editing its pin.
    mise itself moves with `mise self-update --no-plugins`, run only when the installed mise is behind, which the plan flags as changing the machine, and `min_version` takes what `mise --version` then reports, since self-update skips releases younger than its minimum age.
    When a package manager owns the mise install and self-update refuses, pause with the command to run.
@@ -138,14 +141,23 @@ Write every skip to `docs/agents/dependency-updates.md`, one entry per package:
 - **Date**: <YYYY-MM-DD>
 ```
 
-Write each docs-pass adoption the user declined with a reason the same way, since the next docs pass would find it again.
+Write each docs-pass adoption the user declined with a reason the same way, and each adoption reset away after a failed trial with the failure as its reason, since the next docs pass would find them again.
 An adoption merely left unticked returns unticked in the next sweep.
 
 ```markdown
 ## <tool>
 
 - **Declined adoption**: <the feature, and what it would change here>
-- **Reason**: <the user's reason>
+- **Reason**: <the user's reason, or what the trial showed>
+- **Date**: <YYYY-MM-DD>
+```
+
+Record how far the runtime's notes were read, so the next sweep's docs pass starts there:
+
+```markdown
+## <runtime> docs pass
+
+- **Read up to**: <version>
 - **Date**: <YYYY-MM-DD>
 ```
 
