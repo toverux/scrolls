@@ -1,0 +1,7 @@
+extends: existence
+message: "Agent footer '%s': remove it."
+level: error
+ignorecase: true
+scope: text
+raw:
+  - 'generated with \[?claude|co-authored-by:\s*claude'

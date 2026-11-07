@@ -1,0 +1,34 @@
+# Grown from observed hits.
+# The human fixture carries the keep list, so the check catches a keep word added here.
+extends: existence
+message: "Stock AI word '%s': use the plain word, or cut it."
+level: suggestion
+ignorecase: true
+tokens:
+  - additionally
+  - comprehensive
+  - crucial
+  - delve
+  - elevate
+  - ensures?
+  - facilitates?
+  - foster
+  - furthermore
+  - harness
+  - "it's worth noting"
+  - landscape
+  - leverages?
+  - moreover
+  - multifaceted
+  - nuanced
+  - "paving the way"
+  - pivotal
+  - realm
+  - robust
+  - seamless(?:ly)?
+  - streamlined?
+  - tapestry
+  - testament
+  - transformative
+  - utilizes?
+  - "when it comes to"

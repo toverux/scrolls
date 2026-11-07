@@ -1,0 +1,6 @@
+extends: existence
+message: "Bold label '%s': say it in the sentence, or make it a heading."
+level: suggestion
+scope: raw
+raw:
+  - '\*\*[^*\n]{1,60}[.:]\*\*|\*\*[^*\n]{1,60}\*\*:'
