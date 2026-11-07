@@ -32,8 +32,8 @@ run = [
 # Run `mise fix` locally to apply, `mise check` to verify.
 
 [tasks."check"]
-description = "Verify read-only: typescript, oxlint, oxfmt. Writes nothing, run `mise fix(:*)` to auto-fix."
-run = ["mise check:tsc", "mise check:oxlint", "mise check:oxlint"]
+description = "Verify read-only: typescript, oxlint, oxfmt, tests. Writes nothing, run `mise fix(:*)` to auto-fix."
+run = ["mise check:tsc", "mise check:oxlint", "mise check:oxfmt", "mise test"]
 
 [tasks."check:tsc"]
 description = "Type-checks the config files and scripts (read-only)."
@@ -50,12 +50,17 @@ description = "Lints with oxlint, warnings denied (read-only)."
 raw = true
 run = "bun --bun oxlint --deny-warnings"
 
+[tasks."test"]
+description = "Runs the test suite with bun test (read-only)."
+raw = true
+run = "bun test"
+
 # CHECK TASKS (AGENTS)
 # ====================
 
 [tasks."check:agents"]
 description = "Verify read-only (as `mise check`), output optimized for AI agents."
-run = ["mise check:agents:tsc", "mise check:agents:oxlint", "mise check:oxfmt"]
+run = ["mise check:agents:tsc", "mise check:agents:oxlint", "mise check:oxfmt", "mise test"]
 
 [tasks."check:agents:tsc"]
 description = "Type-checks with tsc, output optimized for AI agents."
