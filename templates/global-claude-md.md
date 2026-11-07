@@ -1,5 +1,5 @@
 <!--
-Version: 3.3.0
+Version: 3.4.0
 User-global CLAUDE.md template. It contains stuff I can't put anywhere else and still want to share.
 Copy only what is needed.
 -->
@@ -45,7 +45,7 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 
 ## Writing for humans
 
-- Run prose meant for human readers through the `humanizer:humanizer` skill before it leaves the session: a PR title and body, an issue or a comment, i18n strings, and other permanent high value docs (ex. a README, but not a ROADMAP).
+- Draft prose meant for human readers by the rules in `~/.claude/skills/humanizer/voice.md`, then run the `humanizer` skill on it before it leaves the session: a PR title and body, an issue or a comment, i18n strings, and other permanent high value docs (ex. a README, but not a ROADMAP).
 - Write it direct: state facts, never sell.
 - Files an agent loads follow /writing-for-agents instead.
 
@@ -69,4 +69,3 @@ A handoff for another repo, or for a report to write later, goes in `~/Documents
 ## Git commits
 
 - Do not hard-wrap commit message lines to a fixed width; let lines run their natural length.
-- Do not add Co-Authored-By trailers to commits.

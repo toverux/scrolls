@@ -3,7 +3,7 @@ name: storyboard-video
 description: Make a video from screen recordings on GNOME Wayland, a before/after comparison or a demo, from scripted takes, HTML cards and ffmpeg.
 argument-hint: '[what the video shows, free text]'
 disable-model-invocation: true
-version: 1.2.0
+version: 1.2.1
 ---
 
 # Storyboard video
@@ -70,7 +70,7 @@ Retake one where anything outside the script shows in its frame: a notification,
 Load the `frontend-design` skill, and give the cards the visual language of the product the video shows: its font, colours and panel shapes.
 One HTML file per card, sharing one CSS file, sized in CSS pixels to the video and rendered by `card.sh`.
 A scene that holds takes gets a background card with its labels and an empty frame where each take goes; timers are drawn over it by ffmpeg.
-On-screen text is prose for human viewers: run each string through the `humanizer:humanizer` skill, where installed, whenever one is added or changed.
+On-screen text is prose for human viewers: run each string through the `humanizer` skill, where installed, whenever one is added or changed.
 The HTML files are the single source of every string; when the user asks for the list, read it from them.
 
 **Done when** every card renders and you have looked at each PNG.

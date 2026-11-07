@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text]'
 disable-model-invocation: true
-version: 0.6.0
+version: 0.6.1
 ---
 
 # Open a PR
@@ -69,7 +69,7 @@ Rules for the body, whatever the shape:
 
 ## 4. Humanize, first pass
 
-Run `humanizer:humanizer` on the file in file mode, one pass over the whole text.
+Run `humanizer` on the file in file mode, one pass over the whole text.
 
 **Done when** the pass ran.
 
@@ -87,7 +87,7 @@ Then send the same agent the re-read message of the brief, with the open finding
 
 ## 6. Humanize, final pass
 
-Run `humanizer:humanizer` on the file in file mode, one pass over the whole text, so the critique's rewrites read like the rest.
+Run `humanizer` on the file in file mode, one pass over the whole text, so the critique's rewrites read like the rest.
 
 **Done when** the pass ran.
 
