@@ -1,9 +1,9 @@
 ---
 name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
-argument-hint: '[shape or facts, free text]'
+argument-hint: '[shape or facts, free text] [--disclose-gate]'
 disable-model-invocation: true
-version: 1.0.0
+version: 1.1.0
 # Lints the PR's title and body file before `gh pr create`, `gh pr edit` or the REST fallback runs, and refuses the command on an error-level hit; see check-pr-body.ts, which allows any other `gh` command silently.
 # The paths go through `$HOME`: `${CLAUDE_SKILL_DIR}` is empty in a hook command, and `${CLAUDE_PROJECT_DIR}` is the repo the PR comes from.
 hooks:
@@ -17,9 +17,9 @@ hooks:
 
 # Open a PR
 
-A run turns the current branch into a pull request a maintainer can skim: a draft in `/tmp` built from the commits and the repo's own records, in the humanizer voice, a humanizer pass, a critique by a fresh agent and a second pass, the user's edits with a lint after each, then the push and `gh pr create`, which a hook refuses while the text carries an error-level lint hit.
+A run turns the current branch into a pull request a maintainer can skim: a draft built from the commits and the repo's own records, in the humanizer voice, a humanizer pass, a critique by a fresh agent and a second pass, the user's edits with a lint after each, then the push and `gh pr create`, which a hook refuses while the text carries an error-level lint hit.
 
-The arguments, when given, name the shape or carry facts: which commits the PR covers, the base, what the body must say or leave out.
+The arguments, when given, name the shape or carry facts: which commits the PR covers, the base, what the body must say or leave out. `--disclose-gate` ends the body with every finding of the branch's `/review-gate` run, in the section of [`gate-findings.md`](templates/gate-findings.md).
 
 This skill is under construction: step 9 refines it after every PR it opens, from what the run taught.
 
@@ -46,7 +46,7 @@ One template from `templates/`, each stating what it fits:
 - [`single-change.md`](templates/single-change.md): one improvement across the branch, in prose.
 - [`measured-series.md`](templates/measured-series.md): several commits toward one measured outcome, the headline table first.
 
-A branch with measurements adds the section of [`benchmark.md`](templates/benchmark.md) where its shape says.
+A branch with measurements adds the section of [`benchmark.md`](templates/benchmark.md) where its shape says. Under `--disclose-gate`, the section of [`gate-findings.md`](templates/gate-findings.md) closes the body, whatever the shape.
 
 The user's argument names it when they have a preference. Otherwise propose one in a line, the template and what in the branch fits it, and wait for their approval before drafting. A branch that fits none takes the closest template, and step 9 adds the missing one.
 
@@ -56,7 +56,7 @@ The user's argument names it when they have a preference. Otherwise propose one 
 
 Read the humanizer voice file, `~/.claude/skills/humanizer/voice.md`, first: the register (contractions, first person, the one hedge, the one aside) comes from it, a project voice rule from step 1 winning over it, and the rules below are about content.
 
-Write `/tmp/<repo>-pr-<branch>.md`: line 1 the title, line 2 blank, the body after, in the template's skeleton. A repo convention from step 1 overrides the skeleton where the two differ: its title form, its required sections, its checklist.
+Write `<dir>/<repo>-pr-<branch>.md`, `<dir>` being the project's scratch folder where the project agent file names one (gitignored, so a reboot can't take the draft), `/tmp` otherwise: line 1 the title, line 2 blank, the body after, in the template's skeleton. A repo convention from step 1 overrides the skeleton where the two differ: its title form, its required sections, its checklist.
 
 Rules for the body, whatever the shape:
 
@@ -74,6 +74,7 @@ Rules for the body, whatever the shape:
 - The body states the failure, its cause and the change. The evidence of the testing stays in the records; a maintainer asks for it when they want it.
 - A fix for something that once worked says what changed under it, and since when, as far as the sources tell; where they can't date it, the body says so.
 - The change states what is new to its reader. On someone else's repo, a mechanism the maintainer wrote (their dialog, their setting, their system) is named, never explained.
+- A claim about when a bug hits names the setup it needs (a mod installed locally or subscribed, a deferred or immediate load, the settings), checked against the records, and a symptom from a report is tied to a cause only where a record links them: a draft that ties a fix to the reports overstates what it fixes.
 - A detail of the session's test case (the fixture, the dataset, the input that happened to show the bug) stands only where the fix depends on it; elsewhere, state the rule it is an instance of.
 - A name the maintainer may not know (another project, a tool, an acronym) is spelled out or left out.
 - Short paragraphs, one idea each. The template sets the headings.
@@ -125,12 +126,14 @@ vale --config ~/.claude/skills/humanizer/.vale.ini --ext=.md < <file>
 - Where the user has no fork of the target yet, create one with `gh repo fork <target> --clone=false` (`--remote` is refused beside a repo argument) and add it as a remote.
 - Where the PR holds one commit, or the repo squash-merges, the commit title matches the PR's final title, user edits included: reword the unpushed commit before the push.
 - `git push -u <remote> <branch>`; a local branch pushed under another name goes as `git push <remote> HEAD:refs/heads/<name>`, without `-u`, which would point the local branch's upstream at the fork.
-- Write the body to its own file, `/tmp/<repo>-pr-<branch>-body.md`, from line 3 of the draft on (`tail -n +3 <file> > <body file>`), and write the title out in the command as it stands on line 1, in double quotes with a backslash before each backtick, `$` or `"` in it, so the shell runs nothing from it. The hook this skill registers lints both before the command runs and refuses it on an error-level hit; a `$(…)` title or a `<(…)` body gives it nothing to read.
+- Write the body to its own file, `<dir>/<repo>-pr-<branch>-body.md`, from line 3 of the draft on (`tail -n +3 <file> > <body file>`), and write the title out in the command as it stands on line 1, in double quotes with a backslash before each backtick, `$` or `"` in it, so the shell runs nothing from it. The hook this skill registers lints both before the command runs and refuses it on an error-level hit; a `$(…)` title or a `<(…)` body gives it nothing to read.
 - `gh pr create --repo <target> --base <base> --head <owner>:<branch> --title "<line 1>" --body-file <body file>`, ready for review rather than a draft, so the review bots run; the open PR of step 1 takes `gh pr edit <number> --repo <target> --title "<line 1>" --body-file <body file>` instead, which the hook lints the same way. Where it fails on a spent GraphQL rate limit, open it through REST: `gh api repos/<owner>/<repo>/pulls -f title="<line 1>" -f head=<owner>:<branch> -f base=<base> -F body=@<body file>`.
 - The body carries the whole case; a comment goes on the PR only when the user asks for one.
 - The bookkeeping the project agent file asks for after a PR: a roadmap item closed, a handoff written.
 
-**Done when** the diff is empty but for a trailing newline, the bookkeeping is done, and the reply gives the URL.
+- Once the PR's body reads back the same, delete the draft and the body file.
+
+**Done when** the diff is empty but for a trailing newline, the bookkeeping is done, the draft and body file are deleted, and the reply gives the URL.
 
 ## 9. Refine this skill
 
