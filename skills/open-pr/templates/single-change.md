@@ -19,4 +19,5 @@ Fits a branch that makes one improvement, in one commit or in several that only 
 ## Rules
 
 - A trade-off is stated as a fact beside the gain, with its cost.
+- Each part of the change carries its reason and its measurement in its own paragraph or bullet; a separate "why" section would list the parts twice.
 - A branch with measurements adds the section of [`benchmark.md`](benchmark.md) after the change.

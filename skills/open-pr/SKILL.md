@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text] [--disclose-gate]'
 disable-model-invocation: true
-version: 1.1.0
+version: 1.2.0
 # Lints the PR's title and body file before `gh pr create`, `gh pr edit` or the REST fallback runs, and refuses the command on an error-level hit; see check-pr-body.ts, which allows any other `gh` command silently.
 # The paths go through `$HOME`: `${CLAUDE_SKILL_DIR}` is empty in a hook command, and `${CLAUDE_PROJECT_DIR}` is the repo the PR comes from.
 hooks:
@@ -93,7 +93,9 @@ First put the draft's framing to the user in one line, the story the body tells,
 
 The reviewer takes the brief of [`critique.md`](critique.md). Where this session ran `/review-gate` on the branch and its `cantrips:arbiter` agent is still in context, spawned here and addressable by its id, send the brief to that agent: it already holds the diff's reading. Otherwise spawn a fresh agent, in the background, with the brief as its whole prompt and nothing of this session; an arbiter reachable only through a transcript or a checkpoint counts as absent. Wait for the report.
 
-Apply each finding that holds against the sources. Where one asks for context, add what the records hold. A finding that asks for what the sources lack stays open, and goes in the hand-off note of step 7. A finding the sources refute, or that overstates what it quotes, is ignored, with the fact that refutes it.
+Apply each finding that holds against the sources. Where one asks for context, add what the records hold. An addition or a rewrite is a new claim: trace it to a record before writing it, as step 3 asks. A finding that asks for what the sources lack stays open, and goes in the hand-off note of step 7. A finding the sources refute, or that overstates what it quotes, is ignored, with the fact that refutes it.
+
+A change the body lists and the commit message leaves out goes to the user, with an offer to amend the message while the commit is unpushed: history keeps the message, not the body.
 
 Then send the same agent the re-read message of the brief, with the open findings named and the ignored ones with their refutation, and wait again. Rounds go on until consensus, a round whose findings are all open ones or none, or until four rounds have run.
 

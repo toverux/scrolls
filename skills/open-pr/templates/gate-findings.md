@@ -11,7 +11,7 @@ The gate's state file, which the findings script keeps under `$TMPDIR/cantrips-<
 ```markdown
 ## Review findings
 
-An automated review by AI agents ran <rounds> rounds over the branch and recorded <total> findings: <n> fixed, <n> declined as not worth changing here, <n> refuted, <n> skipped and <n> that needed no change.
+An automated review by AI agents ran <rounds> rounds over the branch and recorded <total> findings: <n> fixed, <n> declined as not worth changing here, <n> refuted, <n> skipped and <n> that needed no change. Verdict says whether a finding is real, and Ruling whether it's worth fixing here; line numbers are from the reviewed revision.
 
 <details>
 <summary>All review findings (<total>)</summary>
@@ -27,9 +27,9 @@ An automated review by AI agents ran <rounds> rounds over the branch and recorde
 
 - Every finding of the run, refuted ones included, in ID order; refuted findings last, with `-` as the ID and as the ruling.
 - The blank line after `<summary>` stays: without it GitHub renders the table as text.
-- Where: the short path and line. A file the PR doesn't carry (gitignored notes) reads "my local notes"; a file whose extension the lint refuses in prose (`.md`, `.json`, `.py`) reads as its human title ("English strings, line 45").
+- Where: the short path and line. A file the PR doesn't carry (gitignored notes) reads "my local notes", and a finding on the PR's own text "this PR's text"; a file whose extension the lint refuses in prose (`.md`, `.json`, `.py`) reads as its human title ("English strings, line 45").
 - Finding: one plain sentence of at most 25 words, from the finding's summary and evidence, with nothing they don't say.
 - Ruling: `fix`, or `declined:` and the arbiter's reason in at most 10 words.
-- Outcome: `fixed`, `no change needed`, `skipped:` and its reason in at most 10 words, `parked`, or `refuted`.
+- Outcome: `fixed`, `not changed` for a declined finding, `no change needed`, `skipped:` and its reason in at most 10 words, `parked`, or `refuted`.
 - The opening line's counts add up to the table's rows; a fix the arbiter raised itself counts as fixed.
 - "to" for a range, never a dash.

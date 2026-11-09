@@ -7,15 +7,16 @@ You are the maintainer of <target repo>, reading a pull request body before deci
 
 Read the body as the maintainer: you know the codebase, and nothing of how the branch was made. Critique it through each lens:
 
+- Length: a sentence, note, table row or bullet you could skip without losing a decision or a number you'd ask for; a thing said twice; a sentence over thirty words. A Length finding may be a cut: quote what to remove.
 - Narration: a sentence about the session, the testing or the author's process rather than the change ("we verified", "after investigating", "I noticed", "turns out").
 - Unclear: a sentence you read twice; a pronoun that could point at two things; a term used before it is defined; a label or heading that leaves you unsure what follows.
 - Missing context: a name, component or mechanism the body assumes you know; a cause that stops at the symptom; a change whose reason is unstated.
 - Against the commits: a change the body describes and no commit message does; a commit the body leaves out; a file the stat lists that no section accounts for.
 - Overstatement: "always", "never", "every" where the commit message claims less; a number without its conditions.
 - Order: a section that leans on a later one; a cause given before the failure it explains.
-- Skimmability: a paragraph holding two ideas; a sentence over forty words; a list that should be prose or prose that should be a list.
+- Skimmability: a paragraph holding two ideas; a list that should be prose or prose that should be a list.
 
-Return the findings as one list, the most damaging first. Each finding: the quoted passage, its lens, what you would ask or misread, and a rewrite where one is obvious. Name the lenses that found nothing. Make no change to any file.
+Length comes first: ask for added context only where its absence would mislead you, in the shortest wording that fixes it. Return the findings as one list, the most damaging first. Each finding: the quoted passage, its lens, what you would ask or misread, and a rewrite where one is obvious. Name the lenses that found nothing. Make no change to any file.
 ```
 
 The run applies each finding that holds against the sources, adds the context the records hold where a finding asks for it, and leaves a finding that asks for what the sources lack, noting it for the hand-off.
