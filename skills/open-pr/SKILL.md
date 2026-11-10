@@ -3,7 +3,7 @@ name: open-pr
 description: Open a pull request from the current branch, its body drafted from the commits and the repo's records in one of the template shapes, humanized, revised with the user, then pushed and opened.
 argument-hint: '[shape or facts, free text] [--disclose-gate]'
 disable-model-invocation: true
-version: 1.2.0
+version: 1.3.0
 # Lints the PR's title and body file before `gh pr create`, `gh pr edit` or the REST fallback runs, and refuses the command on an error-level hit; see check-pr-body.ts, which allows any other `gh` command silently.
 # The paths go through `$HOME`: `${CLAUDE_SKILL_DIR}` is empty in a hook command, and `${CLAUDE_PROJECT_DIR}` is the repo the PR comes from.
 hooks:
