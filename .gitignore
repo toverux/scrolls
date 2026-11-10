@@ -1,3 +1,6 @@
 # npm dependencies
 node_modules
 .scratch/
+
+# per-machine skill databases, kept in ~/.claude/skills only
+skills/*/local.md
