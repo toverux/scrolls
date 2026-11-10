@@ -3,4 +3,4 @@ message: "Emoji '%s': remove it."
 level: error
 nonword: true
 raw:
-  - '[\x{1F000}-\x{1FAFF}\x{2600}-\x{27BF}\x{2B50}\x{2B55}\x{FE0F}]'
+  - '[\x{1F000}-\x{1FA83}\x{1FA85}-\x{1FAFF}\x{2600}-\x{27BF}\x{2B50}\x{2B55}\x{FE0F}]'
