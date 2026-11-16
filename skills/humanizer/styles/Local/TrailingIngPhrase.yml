@@ -1,5 +1,5 @@
 extends: existence
-message: "Participial rider '%s': give it its own verb or sentence, or cut it."
+message: "Trailing -ing phrase '%s': give it its own verb or sentence, or cut it."
 level: suggestion
 ignorecase: true
 raw:
