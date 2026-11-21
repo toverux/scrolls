@@ -1,5 +1,5 @@
 ---
-version: 2.0.0
+version: 2.1.0
 paths:
   - '**/*.cs'
 ---
@@ -92,7 +92,7 @@ Defaults, not law: where surrounding code already follows a convention, match it
 
 - Use `var` everywhere language allows.
 - (C# 9) Use target-typed `new()` for fields and properties where type already on line. Use explicit `new Type()` in return and argument positions where type not on screen. For collection-typed members, use collection expression `[]` instead (see Collections and LINQ).
-- (C# 10) Declare namespaces file-scoped (`namespace Foo;`). Use block only for file needing more than one namespace.
+- (C# 10) Declare namespaces file-scoped (`namespace Foo;`). Use block only for file needing more than one namespace, or where `.editorconfig` asks for it.
 - Use expression-bodied members for any member that is single expression on one readable line. Keep block bodies for multi-statement members and for constructors and finalizers.
 - State every access modifier explicitly, including `private` members and `internal` types.
 - Qualify every instance member access with `this.` (fields, properties, methods, events) and every static member with declaring type name (`OrderService.MaxRetries` even inside `OrderService`). Bare member name never written.
